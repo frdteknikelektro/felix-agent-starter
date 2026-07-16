@@ -1,0 +1,58 @@
+# Felix Agent starter deployment.
+#
+# The published image contains the agent, setup wizard, bundled skills, and
+# runtime tools. This repository intentionally contains only deployment config
+# and persistent-data directories.
+
+x-felix-common: &felix-common
+  image: ${FELIX_IMAGE:-frdinawan/felix-agent:0.1.1}
+  user: "${UID:-1000}:${GID:-1000}"
+  cap_drop:
+    - ALL
+  security_opt:
+    - no-new-privileges:true
+  read_only: true
+  tmpfs:
+    - /tmp:rw,noexec,nosuid
+
+services:
+  setup:
+    <<: *felix-common
+    container_name: felix-setup
+    entrypoint: ["/usr/bin/dumb-init", "--"]
+    command: ["node", "scripts/setup.mjs"]
+    volumes:
+      - ./:/config
+      - ./workspace:/home/node
+    profiles: ["setup"]
+    stdin_open: true
+    tty: true
+    networks:
+      - felix-net
+
+  felix:
+    <<: *felix-common
+    container_name: felix-agent
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:53318:3000"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    secrets:
+      - .env
+    volumes:
+      - ./workspace:/home/node
+
+    networks:
+      - felix-net
+
+secrets:
+  .env:
+    file: .env
+
+networks:
+  felix-net:
+    enable_ipv6: true
+    ipam:
+      config:
+        - subnet: fd00:cafe::/64
