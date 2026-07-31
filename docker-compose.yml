@@ -5,7 +5,7 @@
 # and persistent-data directories.
 
 x-felix-common: &felix-common
-  image: ${FELIX_IMAGE:-frdinawan/felix-agent:0.1.1}
+  image: ${FELIX_IMAGE:-frdinawan/felix-agent:0.2.0}
   user: "${UID:-1000}:${GID:-1000}"
   cap_drop:
     - ALL

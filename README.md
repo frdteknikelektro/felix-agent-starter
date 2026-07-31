@@ -71,7 +71,7 @@ The setup service uses the image selected by `FELIX_IMAGE`, so setup and runtime
 always use the same release. To select a different tag or an immutable digest:
 
 ```bash
-export FELIX_IMAGE=frdinawan/felix-agent:0.1.1
+export FELIX_IMAGE=frdinawan/felix-agent:0.2.0
 # Or: export FELIX_IMAGE=frdinawan/felix-agent@sha256:<verified-digest>
 docker compose pull
 docker compose --profile setup run --rm setup
@@ -89,5 +89,6 @@ then change `FELIX_IMAGE`, run `docker compose pull`, and restart with
   Felix state; it is ignored by Git and must be backed up securely.
 - 🚫 Never commit `.env`, workspace data, API keys, OAuth credentials, or raw logs.
 
-The default image is the versioned `0.1.1` release rather than `latest`. 📍 Pin a
-verified digest for production deployments.
+The default image is the versioned `0.2.0` Docker tag for the Felix `v0.2.0`
+release rather than `latest`. 📍 Pin a verified digest for production
+deployments.
