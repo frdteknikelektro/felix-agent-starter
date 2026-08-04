@@ -35,7 +35,7 @@ services:
     container_name: felix-agent
     restart: unless-stopped
     ports:
-      - "127.0.0.1:53318:3000"
+      - "127.0.0.1:${FELIX_PORT:-0}:3000"
     extra_hosts:
       - "host.docker.internal:host-gateway"
     secrets:
