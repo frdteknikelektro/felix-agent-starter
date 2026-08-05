@@ -38,20 +38,23 @@ env UID="$(id -u)" GID="$(id -g)" \
 
 # Windows Docker Desktop: omit UID/GID from either command above.
 
-# 3️⃣ Start Felix, then wait for its health check
+# 3️⃣ Start Felix with a randomly assigned loopback host port
 docker compose up -d --build
 
-# 4️⃣ Verify it is running
-curl http://localhost:53318/healthz
+# 4️⃣ Discover the assigned port and verify it is running
+docker compose port felix 3000
+curl http://127.0.0.1:$(docker compose port felix 3000 | awk -F: '{print $NF}')/healthz
 ```
 
 The setup wizard creates `.env` interactively. Configure at least one 🧠 LLM
 harness and one 💬 message source, then open the owner console at
-<http://localhost:53318/> and sign in with `OWNER_UI_SECRET`.
+the port reported by `docker compose port felix 3000` and sign in with
+`OWNER_UI_SECRET`.
 
 ### 🖥️ Owner console
 
-The console is bound to loopback (`127.0.0.1`) by default. Exposing it beyond the local host
+The console is bound to loopback (`127.0.0.1`) by default. Docker assigns a
+random host port unless `FELIX_PORT` is set. Exposing it beyond the local host
 requires a customer-managed HTTPS reverse proxy and appropriate firewall rules.
 
 The Compose file intentionally keeps Felix’s IPv6-enabled network for dual-stack
@@ -67,6 +70,7 @@ the deployment does not reserve global names such as `felix-agent` or
 ```bash
 docker compose logs -f         # 📜 follow Felix logs
 docker compose ps              # 🔎 show container status
+docker compose port felix 3000 # 🔌 show the assigned host port
 docker compose restart felix  # 🔁 restart the agent
 docker compose down            # 🛑 stop and remove the container
 
@@ -76,6 +80,9 @@ docker compose --profile setup run --rm --build --service-ports setup
 # Or re-run setup in your browser at http://localhost:53317/
 docker compose --profile setup run --rm --build --service-ports setup-ui
 ```
+
+To choose a stable host port instead, set `FELIX_PORT` in `.env` or the
+environment, for example `FELIX_PORT=53318 docker compose up -d`.
 
 ## 📌 Pinning and upgrades
 
