@@ -5,7 +5,7 @@
 # and persistent-data directories.
 
 x-felix-common: &felix-common
-  image: ${FELIX_IMAGE:-frdinawan/felix-agent:0.2.3}
+  image: ${FELIX_IMAGE:-frdinawan/felix-agent:0.3.1}
   user: "${UID:-1000}:${GID:-1000}"
   cap_drop:
     - ALL
@@ -18,21 +18,39 @@ x-felix-common: &felix-common
 services:
   setup:
     <<: *felix-common
-    container_name: felix-setup
     entrypoint: ["/usr/bin/dumb-init", "--"]
-    command: ["node", "scripts/setup.mjs"]
+    command: ["node", "dist/setup/terminal-main.js"]
     volumes:
       - ./:/config
       - ./workspace:/home/node
     profiles: ["setup"]
     stdin_open: true
     tty: true
+    healthcheck:
+      disable: true
+    networks:
+      - felix-net
+
+  setup-ui:
+    <<: *felix-common
+    entrypoint: ["/usr/bin/dumb-init", "--"]
+    command: ["node", "dist/setup/index.js"]
+    ports:
+      - "127.0.0.1:${FELIX_SETUP_PORT:-53317}:53317"
+    volumes:
+      - ./:/config
+      - ./workspace:/home/node
+    profiles: ["setup"]
+    healthcheck:
+      test: ["CMD", "node", "--input-type=module", "-e", "const r=await fetch('http://127.0.0.1:53317/healthz'); if (!r.ok) process.exit(1)"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
     networks:
       - felix-net
 
   felix:
     <<: *felix-common
-    container_name: felix-agent
     restart: unless-stopped
     ports:
       - "127.0.0.1:${FELIX_PORT:-0}:3000"
@@ -52,7 +70,4 @@ secrets:
 
 networks:
   felix-net:
-    enable_ipv6: true
-    ipam:
-      config:
-        - subnet: fd00:cafe::/64
+    driver: bridge
