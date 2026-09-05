@@ -34,7 +34,8 @@ docker compose --profile setup pull
 env UID="$(id -u)" GID="$(id -g)" \
   docker compose --profile setup run --rm setup
 
-# Browser-based wizard: open http://localhost:53317/ after it starts.
+# Browser-based wizard: start it, then discover the randomly assigned port
+# from a second terminal with `docker compose port setup-ui 53317`.
 # macOS/Linux/WSL:
 env UID="$(id -u)" GID="$(id -g)" \
   docker compose --profile setup run --rm --service-ports setup-ui
@@ -80,7 +81,9 @@ docker compose down            # 🛑 stop and remove the container
 # 🧙 Re-run setup in the terminal
 docker compose --profile setup run --rm setup
 
-# Or re-run setup in your browser at http://localhost:53317/
+# Or re-run setup in your browser. Start the service, then run
+# `docker compose port setup-ui 53317` in a second terminal and open the
+# reported loopback address.
 docker compose --profile setup run --rm --service-ports setup-ui
 
 # ✅ Validate the deployment contract
@@ -88,8 +91,15 @@ docker compose --profile setup run --rm --service-ports setup-ui
 ./tests/compose-contract.sh
 ```
 
-To choose a stable host port instead, set `FELIX_PORT` in `.env` or the
-environment, for example `FELIX_PORT=53318 docker compose up -d`.
+To choose a stable host port instead, set `FELIX_PORT` for Felix or
+`FELIX_SETUP_PORT` for the browser wizard in `.env` or the environment. For
+example:
+
+```bash
+FELIX_PORT=53318 docker compose up -d
+FELIX_SETUP_PORT=53317 \
+  docker compose --profile setup run --rm --service-ports setup-ui
+```
 
 ## 📌 Pinning and upgrades
 

@@ -78,7 +78,7 @@ def require_loopback_port(service_name, target, published):
     if port.get("host_ip") != "127.0.0.1" or str(port.get("published")) != str(published):
         fail(f"{service_name} port is not loopback-only with published value {published!r}: {port}")
 
-require_loopback_port("setup-ui", 53317, 53317)
+require_loopback_port("setup-ui", 53317, 0)
 require_loopback_port("felix", 3000, 0)
 
 healthcheck = services["setup-ui"].get("healthcheck", {})

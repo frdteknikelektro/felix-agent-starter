@@ -36,7 +36,7 @@ services:
     entrypoint: ["/usr/bin/dumb-init", "--"]
     command: ["node", "dist/setup/index.js"]
     ports:
-      - "127.0.0.1:${FELIX_SETUP_PORT:-53317}:53317"
+      - "127.0.0.1:${FELIX_SETUP_PORT:-0}:53317"
     volumes:
       - ./:/config
       - ./workspace:/home/node
