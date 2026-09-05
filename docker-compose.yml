@@ -18,6 +18,9 @@ x-felix-common: &felix-common
 services:
   setup:
     <<: *felix-common
+    environment:
+      UID: "${UID:-1000}"
+      GID: "${GID:-1000}"
     entrypoint: ["/usr/bin/dumb-init", "--"]
     command: ["node", "dist/setup/terminal-main.js"]
     volumes:
@@ -33,6 +36,9 @@ services:
 
   setup-ui:
     <<: *felix-common
+    environment:
+      UID: "${UID:-1000}"
+      GID: "${GID:-1000}"
     entrypoint: ["/usr/bin/dumb-init", "--"]
     command: ["node", "dist/setup/index.js"]
     ports:

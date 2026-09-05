@@ -55,6 +55,10 @@ harness and one 💬 message source, then open the owner console at
 the port reported by `docker compose port felix 3000` and sign in with
 `OWNER_UI_SECRET`.
 
+On macOS/Linux/WSL, the `UID` and `GID` supplied to either setup command are
+also saved in `.env`, keeping the setup container and the Felix runtime aligned
+with the host user that owns `workspace/`.
+
 ### 🖥️ Owner console
 
 The console is bound to loopback (`127.0.0.1`) by default. Docker assigns a

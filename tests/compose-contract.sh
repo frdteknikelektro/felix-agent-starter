@@ -16,12 +16,12 @@ trap cleanup EXIT
 
 printf 'FELIX_IMAGE=contract/image:override\n' > "$override_env"
 
-env -u FELIX_IMAGE -u FELIX_PORT -u FELIX_SETUP_PORT docker compose \
+env -u FELIX_IMAGE -u FELIX_PORT -u FELIX_SETUP_PORT UID=4242 GID=4343 docker compose \
   --env-file "$empty_env" \
   --profile setup \
   config --format json > "$default_config"
 
-env -u FELIX_IMAGE -u FELIX_PORT -u FELIX_SETUP_PORT docker compose \
+env -u FELIX_IMAGE -u FELIX_PORT -u FELIX_SETUP_PORT UID=4242 GID=4343 docker compose \
   --env-file "$override_env" \
   --profile setup \
   config --format json > "$override_config"
@@ -39,6 +39,12 @@ expected_services = {"setup", "setup-ui", "felix"}
 
 def fail(message):
     raise SystemExit(f"compose contract failed: {message}")
+
+def environment_map(service):
+    environment = service.get("environment") or {}
+    if isinstance(environment, dict):
+        return environment
+    return dict(item.split("=", 1) for item in environment)
 
 if set(services) != expected_services:
     fail(f"expected services {sorted(expected_services)}, found {sorted(services)}")
@@ -58,6 +64,11 @@ expected_commands = {
 for name, command in expected_commands.items():
     if services[name].get("command") != command:
         fail(f"{name} command is {services[name].get('command')!r}, expected {command!r}")
+
+for name in ("setup", "setup-ui"):
+    environment = environment_map(services[name])
+    if environment.get("UID") != "4242" or environment.get("GID") != "4343":
+        fail(f"{name} must receive the launch UID/GID: {environment!r}")
 
 for name, service in services.items():
     if "container_name" in service:
