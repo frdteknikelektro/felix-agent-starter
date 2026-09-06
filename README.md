@@ -61,7 +61,7 @@ with the host user that owns `workspace/`.
 
 ### 🎨 Image generation
 
-Felix 0.3.2 supports both OpenAI-compatible image APIs and OpenRouter's
+Felix 0.3.3 supports both OpenAI-compatible image APIs and OpenRouter's
 dedicated Images API. Configure image generation in the setup wizard, or add
 the following to `.env` for OpenRouter:
 
@@ -128,9 +128,9 @@ The setup service uses the image selected by `FELIX_IMAGE`, so setup and runtime
 always use the same release. To select a different tag or an immutable digest:
 
 ```bash
-export FELIX_IMAGE=frdinawan/felix-agent:0.3.2
+export FELIX_IMAGE=frdinawan/felix-agent:0.3.3
 # Or pin the verified multi-architecture release digest:
-# export FELIX_IMAGE=frdinawan/felix-agent@sha256:5d72722e31c308fdbe669374bd42b44485227ff199f2814be962523fd4a369f5
+# export FELIX_IMAGE=frdinawan/felix-agent@sha256:b3291947c96a3ccee359b38ac964636495032554cd7e10ed8dc48ed26c2502d3
 docker compose --profile setup pull
 docker compose --profile setup run --rm setup
 docker compose up -d --wait
@@ -147,6 +147,6 @@ then change `FELIX_IMAGE`, run `docker compose pull`, and restart with
   Felix state; it is ignored by Git and must be backed up securely.
 - 🚫 Never commit `.env`, workspace data, API keys, OAuth credentials, or raw logs.
 
-The default image is the versioned `0.3.2` Docker tag for the Felix `v0.3.2`
+The default image is the versioned `0.3.3` Docker tag for the Felix `v0.3.3`
 release rather than `latest`. 📍 Pin a verified digest for production
 deployments.
