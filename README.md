@@ -3,17 +3,18 @@
 > 🚀 Run [Felix Agent](https://github.com/frdteknikelektro/felix-agent) from a
 > tagged Docker image with a simple, persistent Docker Compose setup.
 
-The Felix image already contains the application, setup wizard, bundled skills,
-and runtime tools. This starter provides only the deployment config and the two
-host-mounted locations Felix needs: `.env` for configuration and `workspace/`
-for persistent state.
+🌐 [Felix Agent website](https://felix-agent.farid-inawan.dev)
+
+The Felix image contains the application, Setup, bundled Skills, and runtime
+tools. This starter provides deployment configuration for a persistent
+Workspace.
 
 ## ✨ What’s included
 
 - 🐳 Pre-built Felix image — no Node.js or local build required
-- 🧙 Interactive first-run setup wizard
-- 💾 Persistent workspace for sessions, skills, credentials, and attachments
-- 🔒 Loopback-only owner console with hardened container defaults
+- 🧙 Terminal Setup and browser Setup Console for first installation
+- 💾 Persistent Workspace for sessions, Skills, credentials, and attachments
+- 🔒 Loopback-only Owner Console with hardened container defaults
 - 🌐 Isolated Docker bridge network and host Chrome access for `felix-browser`
 
 ## 🚀 Quick start
@@ -26,15 +27,15 @@ git clone https://github.com/frdteknikelektro/felix-agent-starter.git
 cd felix-agent-starter
 mkdir -p workspace
 
-# Pull the released image before running either setup wizard
+# Pull the released image before running Setup
 docker compose --profile setup pull
 
-# 2️⃣ First-time setup — choose one wizard
-# Terminal wizard (macOS/Linux/WSL; keeps files owned by your host user).
+# 2️⃣ First-time setup — choose Terminal Setup or Setup Console
+# Terminal Setup (macOS/Linux/WSL; keeps files owned by your host user).
 env UID="$(id -u)" GID="$(id -g)" \
   docker compose --profile setup run --rm setup
 
-# Browser-based wizard: start it, then discover the randomly assigned port
+# Browser Setup Console: start it, then discover the randomly assigned port
 # from a second terminal with `docker compose port setup-ui 53317`.
 # macOS/Linux/WSL:
 env UID="$(id -u)" GID="$(id -g)" \
@@ -50,8 +51,8 @@ docker compose port felix 3000
 curl http://127.0.0.1:$(docker compose port felix 3000 | awk -F: '{print $NF}')/healthz
 ```
 
-The setup wizard creates `.env` interactively. Configure at least one 🧠 LLM
-harness and one 💬 message source, then open the owner console at
+Setup creates `.env` interactively. Configure at least one 🧠 harness and one 💬
+message source, then open the Owner Console at
 the port reported by `docker compose port felix 3000` and sign in with
 `OWNER_UI_SECRET`.
 
@@ -59,7 +60,7 @@ On macOS/Linux/WSL, the `UID` and `GID` supplied to either setup command are
 also saved in `.env`, keeping the setup container and the Felix runtime aligned
 with the host user that owns `workspace/`.
 
-### 🖥️ Owner console
+### 🖥️ Owner Console
 
 The console is bound to loopback (`127.0.0.1`) by default. Docker assigns a
 random host port unless `FELIX_PORT` is set. Exposing it beyond the local host
@@ -82,21 +83,15 @@ docker compose port felix 3000 # 🔌 show the assigned host port
 docker compose restart felix  # 🔁 restart the agent
 docker compose down            # 🛑 stop and remove the container
 
-# 🧙 Re-run setup in the terminal
-docker compose --profile setup run --rm setup
-
-# Or re-run setup in your browser. Start the service, then run
-# `docker compose port setup-ui 53317` in a second terminal and open the
-# reported loopback address.
-docker compose --profile setup run --rm --service-ports setup-ui
-
 # ✅ Validate the deployment contract
 # Requires Python 3 in addition to Docker Compose.
 ./tests/compose-contract.sh
 ```
 
+To run Setup again, repeat step 2 in Quick start.
+
 To choose a stable host port instead, set `FELIX_PORT` for Felix or
-`FELIX_SETUP_PORT` for the browser wizard in `.env` or the environment. For
+`FELIX_SETUP_PORT` for the Setup Console in `.env` or the environment. For
 example:
 
 ```bash
@@ -129,7 +124,3 @@ then change `FELIX_IMAGE`, run `docker compose pull`, and restart with
 - 📂 `workspace/` contains sessions, skills, credentials, attachments, and other
   Felix state; it is ignored by Git and must be backed up securely.
 - 🚫 Never commit `.env`, workspace data, API keys, OAuth credentials, or raw logs.
-
-The default image is the versioned `0.3.4` Docker tag for the Felix `v0.3.4`
-release rather than `latest`. 📍 Pin a verified digest for production
-deployments.
