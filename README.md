@@ -59,23 +59,6 @@ On macOS/Linux/WSL, the `UID` and `GID` supplied to either setup command are
 also saved in `.env`, keeping the setup container and the Felix runtime aligned
 with the host user that owns `workspace/`.
 
-### 🎨 Image generation
-
-Felix 0.3.4 supports both OpenAI-compatible image APIs and OpenRouter's
-dedicated Images API. Configure image generation in the setup wizard, or add
-the following to `.env` for OpenRouter:
-
-```env
-OPENAI_IMAGEN_API_MODE=openrouter
-OPENAI_IMAGEN_API_KEY=<dedicated-image-api-key>
-OPENAI_IMAGEN_BASE_URL=https://openrouter.ai/api/v1
-```
-
-`OPENAI_IMAGEN_API_KEY` is intentionally separate from the harness key and
-`OPENROUTER_API_KEY`. The base URL must be the API base, without an `/images`
-suffix. Standard OpenAI-compatible mode remains the default when the mode is
-omitted.
-
 ### 🖥️ Owner console
 
 The console is bound to loopback (`127.0.0.1`) by default. Docker assigns a
