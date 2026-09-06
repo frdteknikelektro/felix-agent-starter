@@ -104,12 +104,12 @@ if network.get("driver") != "bridge" or network.get("enable_ipv6"):
 print("compose contract passed")
 PY
 
-if rg -n '0\.2\.3|0\.3\.1' README.md; then
+if grep -En '0\.2\.3|0\.3\.1' README.md; then
   echo "compose contract failed: README contains stale release references" >&2
   exit 1
 fi
 
-if ! rg -n 'frdinawan/felix-agent:0\.3\.2' README.md >/dev/null; then
+if ! grep -Eq 'frdinawan/felix-agent:0\.3\.2' README.md; then
   echo "compose contract failed: README does not document the 0.3.2 image" >&2
   exit 1
 fi
