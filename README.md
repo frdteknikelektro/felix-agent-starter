@@ -59,6 +59,23 @@ On macOS/Linux/WSL, the `UID` and `GID` supplied to either setup command are
 also saved in `.env`, keeping the setup container and the Felix runtime aligned
 with the host user that owns `workspace/`.
 
+### 🎨 Image generation
+
+Felix 0.3.2 supports both OpenAI-compatible image APIs and OpenRouter's
+dedicated Images API. Configure image generation in the setup wizard, or add
+the following to `.env` for OpenRouter:
+
+```env
+OPENAI_IMAGEN_API_MODE=openrouter
+OPENAI_IMAGEN_API_KEY=<dedicated-image-api-key>
+OPENAI_IMAGEN_BASE_URL=https://openrouter.ai/api/v1
+```
+
+`OPENAI_IMAGEN_API_KEY` is intentionally separate from the harness key and
+`OPENROUTER_API_KEY`. The base URL must be the API base, without an `/images`
+suffix. Standard OpenAI-compatible mode remains the default when the mode is
+omitted.
+
 ### 🖥️ Owner console
 
 The console is bound to loopback (`127.0.0.1`) by default. Docker assigns a
@@ -111,9 +128,9 @@ The setup service uses the image selected by `FELIX_IMAGE`, so setup and runtime
 always use the same release. To select a different tag or an immutable digest:
 
 ```bash
-export FELIX_IMAGE=frdinawan/felix-agent:0.3.1
+export FELIX_IMAGE=frdinawan/felix-agent:0.3.2
 # Or pin the verified multi-architecture release digest:
-# export FELIX_IMAGE=frdinawan/felix-agent@sha256:912d171227304ab5e8674edb3b5d181fceb4eb6186d53053deb4c207d9f62a43
+# export FELIX_IMAGE=frdinawan/felix-agent@sha256:5d72722e31c308fdbe669374bd42b44485227ff199f2814be962523fd4a369f5
 docker compose --profile setup pull
 docker compose --profile setup run --rm setup
 docker compose up -d --wait
@@ -130,6 +147,6 @@ then change `FELIX_IMAGE`, run `docker compose pull`, and restart with
   Felix state; it is ignored by Git and must be backed up securely.
 - 🚫 Never commit `.env`, workspace data, API keys, OAuth credentials, or raw logs.
 
-The default image is the versioned `0.3.1` Docker tag for the Felix `v0.3.1`
+The default image is the versioned `0.3.2` Docker tag for the Felix `v0.3.2`
 release rather than `latest`. 📍 Pin a verified digest for production
 deployments.

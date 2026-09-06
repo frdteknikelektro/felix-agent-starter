@@ -50,7 +50,7 @@ if set(services) != expected_services:
     fail(f"expected services {sorted(expected_services)}, found {sorted(services)}")
 
 default_images = {name: service.get("image") for name, service in services.items()}
-if set(default_images.values()) != {"frdinawan/felix-agent:0.3.1"}:
+if set(default_images.values()) != {"frdinawan/felix-agent:0.3.2"}:
     fail(f"unexpected default images: {default_images}")
 
 override_images = {name: service.get("image") for name, service in override_services.items()}
@@ -104,7 +104,12 @@ if network.get("driver") != "bridge" or network.get("enable_ipv6"):
 print("compose contract passed")
 PY
 
-if rg -n '0\.2\.3' README.md; then
-  echo "compose contract failed: README contains stale 0.2.3 references" >&2
+if rg -n '0\.2\.3|0\.3\.1' README.md; then
+  echo "compose contract failed: README contains stale release references" >&2
+  exit 1
+fi
+
+if ! rg -n 'frdinawan/felix-agent:0\.3\.2' README.md >/dev/null; then
+  echo "compose contract failed: README does not document the 0.3.2 image" >&2
   exit 1
 fi
