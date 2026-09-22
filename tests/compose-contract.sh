@@ -46,6 +46,15 @@ def environment_map(service):
         return environment
     return dict(item.split("=", 1) for item in environment)
 
+def volume_targets(service):
+    targets = set()
+    for volume in service.get("volumes", []):
+        if isinstance(volume, dict):
+            targets.add(volume.get("target"))
+        else:
+            targets.add(str(volume).split(":")[-1])
+    return targets
+
 if set(services) != expected_services:
     fail(f"expected services {sorted(expected_services)}, found {sorted(services)}")
 
@@ -73,6 +82,11 @@ for name in ("setup", "setup-ui"):
 for name, service in services.items():
     if "container_name" in service:
         fail(f"{name} sets container_name")
+    targets = volume_targets(service)
+    if "/home/agent" not in targets:
+        fail(f"{name} must mount the Workspace at /home/agent")
+    if "/home/node" in targets:
+        fail(f"{name} contains the obsolete /home/node Workspace mount")
     if service.get("cap_drop") != ["ALL"]:
         fail(f"{name} must drop all capabilities")
     if service.get("read_only") is not True:
