@@ -59,7 +59,7 @@ if set(services) != expected_services:
     fail(f"expected services {sorted(expected_services)}, found {sorted(services)}")
 
 default_images = {name: service.get("image") for name, service in services.items()}
-if set(default_images.values()) != {"frdinawan/felix-agent:0.4.1"}:
+if set(default_images.values()) != {"frdinawan/felix-agent:0.5.0"}:
     fail(f"unexpected default images: {default_images}")
 
 override_images = {name: service.get("image") for name, service in override_services.items()}
@@ -123,7 +123,7 @@ if grep -En '0\.2\.3([^0-9]|$)|0\.3\.1([^0-9]|$)|0\.3\.3([^0-9]|$)' README.md; t
   exit 1
 fi
 
-if ! grep -Eq 'frdinawan/felix-agent:0\.4\.1' README.md; then
-  echo "compose contract failed: README does not document the 0.4.1 image" >&2
+if ! grep -Eq 'frdinawan/felix-agent:0\.5\.0' README.md; then
+  echo "compose contract failed: README does not document the 0.5.0 image" >&2
   exit 1
 fi

@@ -110,9 +110,9 @@ The setup service uses the image selected by `FELIX_IMAGE`, so setup and runtime
 always use the same release. To select a different tag or an immutable digest:
 
 ```bash
-export FELIX_IMAGE=frdinawan/felix-agent:0.4.1
-# Or pin the verified multi-architecture release digest:
-# export FELIX_IMAGE=frdinawan/felix-agent@sha256:5503b024d67d0f2f594e4d79701d023b864604729b9e81af8fe11ad2264c4b55
+export FELIX_IMAGE=frdinawan/felix-agent:0.5.0
+# After publication, you can pin the verified 0.5.0 multi-architecture digest:
+# export FELIX_IMAGE=frdinawan/felix-agent@sha256:<verified-0.5.0-digest>
 docker compose --profile setup pull
 docker compose --profile setup run --rm setup
 docker compose up -d --wait
